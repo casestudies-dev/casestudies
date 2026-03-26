@@ -1,0 +1,660 @@
+openapi: 3.1.0
+info:
+  title: casestudy.dev
+  description: Programmatic access to millions of real-life company case studies. Search, filter, and discover case studies by company, industry, or natural language queries.
+  version: 1.0.0
+servers:
+  - url: https://whatsapp-backend-knd2.onrender.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Your casestudy.dev API key. Get one at POST /v1/keys.
+
+  schemas:
+    CaseStudySummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        company_name:
+          type: string
+          example: "Stripe"
+        company_slug:
+          type: string
+          example: "stripe"
+        title:
+          type: string
+          example: "How Figma scaled payments with Stripe"
+        summary:
+          type: string
+          example: "Figma adopted Stripe to handle global payments, reducing checkout friction and increasing conversion by 15%."
+        featured_client:
+          type: string
+          example: "Figma"
+        industry:
+          type: string
+          example: "design"
+        source_url:
+          type: string
+          format: uri
+        tags:
+          type: array
+          items:
+            type: string
+        word_count:
+          type: integer
+        published_date:
+          type: string
+          format: date
+          nullable: true
+
+    CaseStudyFull:
+      allOf:
+        - $ref: '#/components/schemas/CaseStudySummary'
+        - type: object
+          properties:
+            full_text:
+              type: string
+              description: Full case study text. Requires Pro tier.
+              nullable: true
+            problem:
+              type: string
+            solution:
+              type: string
+            outcomes:
+              type: string
+            featured_client_domain:
+              type: string
+              nullable: true
+            scraped_at:
+              type: string
+              format: date-time
+
+    CompanySummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "Stripe"
+        slug:
+          type: string
+          example: "stripe"
+        domain:
+          type: string
+          example: "stripe.com"
+        industry:
+          type: string
+          example: "fintech"
+        logo_url:
+          type: string
+          format: uri
+        total_case_studies:
+          type: integer
+
+    SemanticResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        summary:
+          type: string
+        featured_client:
+          type: string
+        industry:
+          type: string
+        problem:
+          type: string
+        solution:
+          type: string
+        outcomes:
+          type: string
+        source_url:
+          type: string
+          format: uri
+        tags:
+          type: array
+          items:
+            type: string
+        similarity:
+          type: number
+          format: float
+          description: Cosine similarity score (0-1). Higher = more relevant.
+
+    CompanyAnalysis:
+      type: object
+      properties:
+        company:
+          $ref: '#/components/schemas/CompanySummary'
+        total_case_studies:
+          type: integer
+        top_industries:
+          type: array
+          items:
+            type: object
+            properties:
+              industry:
+                type: string
+              count:
+                type: integer
+        notable_clients:
+          type: array
+          items:
+            type: string
+        common_tags:
+          type: array
+          items:
+            type: object
+            properties:
+              tag:
+                type: string
+              count:
+                type: integer
+        outcome_highlights:
+          type: array
+          items:
+            type: string
+
+paths:
+  /v1/stats:
+    get:
+      summary: Get platform stats
+      description: Public endpoint. Returns total case studies and companies indexed.
+      operationId: getStats
+      security: []
+      responses:
+        '200':
+          description: Platform statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_case_studies:
+                    type: integer
+                    example: 450
+                  total_companies:
+                    type: integer
+                    example: 58
+
+  /v1/casestudies:
+    get:
+      summary: Search case studies
+      description: |
+        Search and filter case studies using full-text search and structured filters.
+        Combine multiple filters for precise results.
+      operationId: searchCaseStudies
+      parameters:
+        - name: q
+          in: query
+          description: Full-text search query
+          schema:
+            type: string
+          example: "reduced churn"
+        - name: company
+          in: query
+          description: Filter by company slug (the vendor)
+          schema:
+            type: string
+          example: "stripe"
+        - name: featuring
+          in: query
+          description: Filter by featured client domain
+          schema:
+            type: string
+          example: "figma.com"
+        - name: industry
+          in: query
+          description: Filter by industry
+          schema:
+            type: string
+          example: "fintech"
+        - name: tag
+          in: query
+          description: Filter by tag
+          schema:
+            type: string
+          example: "payments"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: Paginated case study results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CaseStudySummary'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  per_page:
+                    type: integer
+
+  /v1/casestudies/semantic:
+    post:
+      summary: Semantic search
+      description: |
+        Search case studies using natural language. Uses vector similarity to find
+        the most relevant results, even when exact keywords don't match.
+
+        Combine with filters to narrow results by company or industry first,
+        then rank by semantic relevance.
+      operationId: semanticSearch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - query
+              properties:
+                query:
+                  type: string
+                  description: Natural language search query
+                  example: "companies that improved sales pipeline with better data enrichment"
+                company:
+                  type: string
+                  description: Filter by company slug
+                  nullable: true
+                industry:
+                  type: string
+                  description: Filter by industry
+                  nullable: true
+                tag:
+                  type: string
+                  nullable: true
+                limit:
+                  type: integer
+                  default: 10
+                similarity_threshold:
+                  type: number
+                  default: 0.3
+                  description: Minimum similarity score (0-1)
+      responses:
+        '200':
+          description: Ranked case study results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SemanticResult'
+                  query:
+                    type: string
+              example:
+                query: "companies that improved sales pipeline with better data enrichment"
+                data:
+                  - id: "8d25bb21-6fad-471d-9899-8facbe032549"
+                    title: "Remote relies on Kernel custom data to build pipeline"
+                    summary: "Remote used Kernel to add 15,000 net new accounts in one week and book 130+ extra meetings monthly."
+                    featured_client: "Remote"
+                    industry: "hr tech"
+                    similarity: 0.4898
+
+  /v1/casestudies/batch:
+    post:
+      summary: Batch semantic search
+      description: |
+        Run multiple semantic queries in a single API call. Ideal for AI agents
+        that need to research several topics at once. Max 10 queries per batch.
+      operationId: batchSearch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - queries
+              properties:
+                queries:
+                  type: array
+                  maxItems: 10
+                  items:
+                    type: object
+                    required:
+                      - query
+                    properties:
+                      query:
+                        type: string
+                      industry:
+                        type: string
+                        nullable: true
+                      company:
+                        type: string
+                        nullable: true
+                      limit:
+                        type: integer
+                        default: 5
+            example:
+              queries:
+                - query: "improved onboarding conversion"
+                  industry: "fintech"
+                  limit: 3
+                - query: "reduced customer churn with data"
+                  limit: 3
+      responses:
+        '200':
+          description: Array of results, one per query
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/SemanticResult'
+                        query:
+                          type: string
+
+  /v1/casestudies/{id}:
+    get:
+      summary: Get case study
+      description: |
+        Retrieve a single case study by ID. Free tier returns all fields except `full_text`.
+        Pro tier and above includes the complete case study text.
+      operationId: getCaseStudy
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Full case study
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseStudyFull'
+        '404':
+          description: Case study not found
+
+  /v1/companies:
+    get:
+      summary: List companies
+      description: List all indexed companies, sorted by number of case studies.
+      operationId: listCompanies
+      parameters:
+        - name: industry
+          in: query
+          description: Filter by industry
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Search by company name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of companies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CompanySummary'
+                  total:
+                    type: integer
+
+  /v1/companies/{slug}:
+    get:
+      summary: Get company
+      description: Get a company by slug with all its case studies.
+      operationId: getCompany
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "stripe"
+      responses:
+        '200':
+          description: Company with case studies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  company:
+                    $ref: '#/components/schemas/CompanySummary'
+                  case_studies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CaseStudySummary'
+
+  /v1/companies/{slug}/analysis:
+    get:
+      summary: Company analysis
+      description: |
+        Get a rolled-up analysis of a company's case study portfolio.
+        Includes top industries served, notable clients, common themes, and outcome highlights.
+
+        Use this for competitor analysis or VC due diligence.
+      operationId: getCompanyAnalysis
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "checkout"
+      responses:
+        '200':
+          description: Company analysis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyAnalysis'
+
+  /v1/companies/{slug}/timeline:
+    get:
+      summary: Company timeline
+      description: |
+        Chronological view of a company's case studies with industry breakdown.
+        Useful for tracking a company's growth trajectory and market expansion.
+      operationId: getCompanyTimeline
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Timeline with industry breakdown
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  company:
+                    $ref: '#/components/schemas/CompanySummary'
+                  timeline:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        title:
+                          type: string
+                        featured_client:
+                          type: string
+                        industry:
+                          type: string
+                        published_date:
+                          type: string
+                          format: date
+                        scraped_at:
+                          type: string
+                          format: date-time
+                  industries_over_time:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        industry:
+                          type: string
+                        count:
+                          type: integer
+
+  /v1/compare:
+    post:
+      summary: Compare vendors
+      description: |
+        Compare up to 5 companies side-by-side. Optionally filter case studies
+        by your industry to see which vendor has the most relevant experience.
+
+        Ideal for procurement teams evaluating vendors.
+      operationId: compareVendors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - companies
+              properties:
+                companies:
+                  type: array
+                  maxItems: 5
+                  items:
+                    type: string
+                  description: Company slugs to compare
+                industry:
+                  type: string
+                  nullable: true
+                  description: Filter case studies by your industry
+                limit_per_company:
+                  type: integer
+                  default: 5
+            example:
+              companies: ["gocardless", "checkout", "paddle"]
+              industry: "ecommerce"
+              limit_per_company: 5
+      responses:
+        '200':
+          description: Side-by-side comparison
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        company:
+                          $ref: '#/components/schemas/CompanySummary'
+                        case_studies:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/CaseStudySummary'
+                        top_industries:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              industry:
+                                type: string
+                              count:
+                                type: integer
+                        notable_clients:
+                          type: array
+                          items:
+                            type: string
+                  industry_filter:
+                    type: string
+                    nullable: true
+
+  /v1/keys:
+    post:
+      summary: Register for an API key
+      description: |
+        Get a free API key with 100 requests/month. Upgrade to Pro for 10,000 requests/month
+        and full case study text.
+      operationId: registerApiKey
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+            example:
+              email: "dev@yourcompany.com"
+      responses:
+        '200':
+          description: API key created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_key:
+                    type: string
+                    example: "cs_live_abc123..."
+                  tier:
+                    type: string
+                    example: "free"
+                  monthly_limit:
+                    type: integer
+                    example: 100
+                  message:
+                    type: string
+        '409':
+          description: Email already has an active key
