@@ -1,0 +1,38 @@
+---
+title: API Keys
+description: How to get and use your API key.
+---
+
+# API Keys
+
+All endpoints except `/v1/stats`, `/v1/keys`, and `/v1/submit` require an API key.
+
+## Get your key
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/keys \
+  -H "Content-Type: application/json" \
+  -d '{"email": "you@company.com"}'
+```
+
+Your key is returned once. Store it securely.
+
+## Use your key
+
+Pass it in the `X-API-Key` header:
+
+```bash
+curl https://whatsapp-backend-knd2.onrender.com/v1/casestudies?company=stripe \
+  -H "X-API-Key: cs_live_abc123..."
+```
+
+## One key per email
+
+Each email can have one active API key. Contact support if you need a new one.
+
+## Errors
+
+| Code | Meaning |
+|------|---------|
+| `401` | Missing or invalid API key |
+| `429` | Monthly rate limit exceeded |

@@ -1,0 +1,30 @@
+---
+title: Search Overview
+description: Filtered vs semantic search, and when to use each.
+---
+
+# Search Overview
+
+casestudy.dev offers two ways to search. Use them separately or together.
+
+## Filtered search
+
+`GET /v1/casestudies` — Best for exact lookups: "all case studies from Stripe" or "case studies in fintech".
+
+## Semantic search
+
+`POST /v1/casestudies/semantic` — Best for natural language: "companies that improved onboarding conversion". Uses vector embeddings to find relevant results even when exact keywords don't match.
+
+## When to use which
+
+| Scenario | Use |
+|----------|-----|
+| All Stripe case studies | Filtered |
+| Case studies about reducing churn | Semantic |
+| Fintech case studies about onboarding | Semantic + industry filter |
+| Paginate through all results | Filtered |
+| AI agent building a proposal | Semantic or Batch |
+
+## Batch search
+
+`POST /v1/casestudies/batch` — Up to 10 semantic queries in one call. Designed for AI agents.

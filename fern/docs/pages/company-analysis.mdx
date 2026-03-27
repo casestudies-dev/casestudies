@@ -1,0 +1,26 @@
+---
+title: Company Analysis
+description: Top industries, notable clients, outcome highlights.
+---
+
+# Company Analysis
+
+`GET /v1/companies/{slug}/analysis`
+
+Get a high-level analysis of a company's case study portfolio. Useful for competitor research and VC due diligence.
+
+## Example
+
+```bash
+curl "https://whatsapp-backend-knd2.onrender.com/v1/companies/checkout/analysis" \
+  -H "X-API-Key: YOUR_KEY"
+```
+
+## What each field tells you
+
+| Field | Insight |
+|-------|---------|
+| `top_industries` | Which industries this company targets most |
+| `notable_clients` | Recognisable names they've worked with |
+| `common_tags` | Recurring themes across their case studies |
+| `outcome_highlights` | Headline metrics their customers achieved |

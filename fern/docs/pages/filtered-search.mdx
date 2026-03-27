@@ -1,0 +1,34 @@
+---
+title: Filtered Search
+description: Search case studies with structured filters and full-text search.
+---
+
+# Filtered Search
+
+`GET /v1/casestudies`
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `q` | string | Full-text search query |
+| `company` | string | Filter by company slug |
+| `featuring` | string | Filter by featured client domain |
+| `industry` | string | Filter by industry |
+| `tag` | string | Filter by tag |
+| `page` | integer | Page number (default: 1) |
+| `per_page` | integer | Results per page (default: 20, max: 100) |
+
+## Examples
+
+```bash
+# All case studies from a company
+curl "https://whatsapp-backend-knd2.onrender.com/v1/casestudies?company=checkout" \
+  -H "X-API-Key: YOUR_KEY"
+
+# Full-text search within an industry
+curl "https://whatsapp-backend-knd2.onrender.com/v1/casestudies?q=payments&industry=ecommerce" \
+  -H "X-API-Key: YOUR_KEY"
+```
+
+Note: `full_text` is not included in list results. Use the case study detail endpoint for full text (Pro tier required).

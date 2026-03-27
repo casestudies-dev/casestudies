@@ -1,0 +1,28 @@
+---
+title: Companies Overview
+description: How company data is structured and what endpoints are available.
+---
+
+# Companies
+
+Every case study belongs to a company. Companies have endpoints for lookup, analysis, and timeline views.
+
+## Company fields
+
+| Field | Description |
+|-------|-------------|
+| `name` | Company name |
+| `slug` | URL-friendly ID (e.g. `checkout`) |
+| `domain` | Website domain |
+| `industry` | Primary industry |
+| `logo_url` | Logo image URL |
+| `total_case_studies` | Number of indexed case studies |
+
+## Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /v1/companies` | List and search companies |
+| `GET /v1/companies/{slug}` | Company with its case studies |
+| `GET /v1/companies/{slug}/analysis` | Top industries, clients, outcomes |
+| `GET /v1/companies/{slug}/timeline` | Chronological view |

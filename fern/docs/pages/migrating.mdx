@@ -1,0 +1,38 @@
+---
+title: Migrating from Manual Research
+description: Replace spreadsheets and manual Googling with structured API access.
+---
+
+# Migrating from Manual Research
+
+## Before: Google + copy-paste
+
+1. Google "Stripe case studies fintech"
+2. Click through 10 pages
+3. Read each one, copy relevant bits into a doc
+
+**Time: 30-60 minutes per search**
+
+## After: one API call
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/casestudies/semantic \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "fintech companies that scaled payments", "limit": 10}'
+```
+
+**Time: 200ms**
+
+## Before: comparing vendors manually
+
+Open five browser tabs. Read case studies from each vendor. Try to compare apples to apples.
+
+## After: one comparison call
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/compare \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"companies": ["gocardless", "checkout", "paddle"], "industry": "ecommerce"}'
+```

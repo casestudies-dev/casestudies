@@ -1,0 +1,64 @@
+---
+title: Quick Start
+description: Get your API key and make your first search in 60 seconds.
+---
+
+# Quick Start
+
+## 1. Get an API key
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/keys \
+  -H "Content-Type: application/json" \
+  -d '{"email": "you@company.com"}'
+```
+
+```json
+{
+  "api_key": "cs_live_abc123...",
+  "tier": "free",
+  "monthly_limit": 100,
+  "message": "Store this key securely — it won't be shown again."
+}
+```
+
+Save your key. It's only shown once.
+
+## 2. Search case studies
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/casestudies/semantic \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "companies that reduced churn with better onboarding", "limit": 5}'
+```
+
+Or use filtered search for exact lookups:
+
+```bash
+curl https://whatsapp-backend-knd2.onrender.com/v1/casestudies?company=checkout&industry=ecommerce \
+  -H "X-API-Key: YOUR_KEY"
+```
+
+## 3. Parse the response
+
+```json
+{
+  "data": [
+    {
+      "id": "8d25bb21-6fad-471d-9899-8facbe032549",
+      "title": "Remote relies on Kernel custom data to build pipeline",
+      "summary": "Remote used Kernel to add 15,000 net new accounts...",
+      "featured_client": "Remote",
+      "industry": "hr tech",
+      "problem": "Headcount data was a blunt proxy for travel spend...",
+      "solution": "Kernel enriched 300k accounts with travel intelligence...",
+      "outcomes": "130 extra meetings booked monthly, 15k new accounts",
+      "source_url": "https://www.kernel.ai/case-studies/remote",
+      "tags": ["crm", "data-enrichment", "sales"],
+      "similarity": 0.4898
+    }
+  ],
+  "query": "companies that reduced churn with better onboarding"
+}
+```

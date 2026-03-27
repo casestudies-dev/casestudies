@@ -1,0 +1,31 @@
+---
+title: Batch Search
+description: Multiple semantic queries in one API call.
+---
+
+# Batch Search
+
+`POST /v1/casestudies/batch`
+
+Run up to 10 semantic queries in one call. Designed for AI agents.
+
+## Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `queries` | array | Yes | Array of query objects (max 10) |
+| `queries[].query` | string | Yes | Natural language query |
+| `queries[].industry` | string | No | Filter by industry |
+| `queries[].company` | string | No | Filter by company slug |
+| `queries[].limit` | integer | No | Max results per query (default: 5) |
+
+## Example
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/casestudies/batch \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"queries": [{"query": "improved onboarding", "industry": "fintech", "limit": 3}, {"query": "reduced churn", "limit": 3}]}'
+```
+
+Returns one result set per query, in the same order. Each query counts as one request against your monthly limit.

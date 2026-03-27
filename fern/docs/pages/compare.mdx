@@ -1,0 +1,29 @@
+---
+title: Compare Vendors
+description: Side-by-side vendor comparison for procurement teams.
+---
+
+# Compare Vendors
+
+`POST /v1/compare`
+
+Compare up to 5 companies side-by-side. Optionally filter by your industry.
+
+## Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `companies` | array | Yes | Company slugs (max 5) |
+| `industry` | string | No | Filter by your industry |
+| `limit_per_company` | integer | No | Max case studies per company (default: 5) |
+
+## Example
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/compare \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"companies": ["gocardless", "checkout", "paddle"], "industry": "ecommerce", "limit_per_company": 5}'
+```
+
+Returns case studies, top industries, and notable clients for each vendor.

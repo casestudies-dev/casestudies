@@ -1,0 +1,57 @@
+---
+title: Use Cases
+description: How teams use the casestudy.dev API.
+---
+
+# Use Cases
+
+## Sales and presales research
+
+Find social proof for your next pitch. Search by your prospect's industry to find relevant case studies.
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/casestudies/semantic \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "fintech company that reduced onboarding time", "industry": "fintech", "limit": 5}'
+```
+
+## AI agents and copilots
+
+Use the batch endpoint for multiple queries in one call.
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/casestudies/batch \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"queries": [{"query": "improved developer productivity", "limit": 3}, {"query": "reduced infrastructure costs", "limit": 3}]}'
+```
+
+## Competitor analysis
+
+See how a competitor positions themselves, which industries they target, and their notable clients.
+
+```bash
+curl https://whatsapp-backend-knd2.onrender.com/v1/companies/checkout/analysis \
+  -H "X-API-Key: YOUR_KEY"
+```
+
+## Procurement and vendor evaluation
+
+Compare vendors side-by-side, filtered by your industry.
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/compare \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"companies": ["gocardless", "checkout", "paddle"], "industry": "ecommerce", "limit_per_company": 5}'
+```
+
+## VC and PE due diligence
+
+Track a company's case study output over time.
+
+```bash
+curl https://whatsapp-backend-knd2.onrender.com/v1/companies/checkout/timeline \
+  -H "X-API-Key: YOUR_KEY"
+```

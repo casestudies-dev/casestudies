@@ -1,0 +1,19 @@
+---
+title: Company Detail
+description: Get a company by slug with all its case studies.
+---
+
+# Company Detail
+
+`GET /v1/companies/{slug}`
+
+Returns a company and all its indexed case studies.
+
+## Example
+
+```bash
+curl "https://whatsapp-backend-knd2.onrender.com/v1/companies/checkout" \
+  -H "X-API-Key: YOUR_KEY"
+```
+
+Case studies are sorted by most recently scraped.

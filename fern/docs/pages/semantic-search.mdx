@@ -1,0 +1,45 @@
+---
+title: Semantic Search
+description: Natural language search using vector similarity.
+---
+
+# Semantic Search
+
+`POST /v1/casestudies/semantic`
+
+Search using plain English. The API converts your query to a vector and finds semantically similar case studies.
+
+## Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `query` | string | Yes | Natural language search query |
+| `company` | string | No | Filter by company slug |
+| `industry` | string | No | Filter by industry |
+| `tag` | string | No | Filter by tag |
+| `limit` | integer | No | Max results (default: 10) |
+| `similarity_threshold` | float | No | Min similarity 0-1 (default: 0.3) |
+
+## Example
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/casestudies/semantic \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "companies that improved sales pipeline with better data", "limit": 5}'
+```
+
+## Understanding similarity scores
+
+| Score | Meaning |
+|-------|---------|
+| 0.5+ | Strong match |
+| 0.35-0.5 | Relevant |
+| 0.3-0.35 | Loosely related |
+| Below 0.3 | Filtered out |
+
+## Tips
+
+- Be specific: "SaaS companies that reduced churn by improving onboarding" beats "churn"
+- Use filters to narrow first, then let semantic ranking sort within the set
+- For multiple queries at once, use Batch Search

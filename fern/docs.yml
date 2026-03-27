@@ -1,0 +1,72 @@
+instances:
+  - url: casestudies.docs.buildwithfern.com
+    custom-domain: docs.casestudies.dev
+
+title: casestudies.dev
+
+navigation:
+  - section: Guides
+    contents:
+      - page: Introduction
+        path: ./docs/pages/introduction.mdx
+      - page: Quick Start
+        path: ./docs/pages/quick-start.mdx
+      - page: Use Cases
+        path: ./docs/pages/use-cases.mdx
+      - page: Migrating from Manual Research
+        path: ./docs/pages/migrating.mdx
+  - section: Search Case Studies
+    contents:
+      - page: Overview
+        path: ./docs/pages/search-overview.mdx
+      - page: Filtered Search
+        path: ./docs/pages/filtered-search.mdx
+      - page: Semantic Search
+        path: ./docs/pages/semantic-search.mdx
+      - page: Batch Search
+        path: ./docs/pages/batch-search.mdx
+  - section: Search by Company
+    contents:
+      - page: Overview
+        path: ./docs/pages/companies-overview.mdx
+      - page: List & Search
+        path: ./docs/pages/companies-list.mdx
+      - page: Company Detail
+        path: ./docs/pages/company-detail.mdx
+      - page: Company Analysis
+        path: ./docs/pages/company-analysis.mdx
+      - page: Company Timeline
+        path: ./docs/pages/company-timeline.mdx
+  - section: Compare
+    contents:
+      - page: Compare Vendors
+        path: ./docs/pages/compare.mdx
+  - section: Submit
+    contents:
+      - page: Submit Case Studies
+        path: ./docs/pages/submit.mdx
+  - section: Platform
+    contents:
+      - page: API Keys
+        path: ./docs/pages/api-keys.mdx
+      - page: Rate Limits
+        path: ./docs/pages/rate-limits.mdx
+      - page: Pricing
+        path: ./docs/pages/pricing.mdx
+      - page: Data Freshness
+        path: ./docs/pages/data-freshness.mdx
+  - section: Support
+    contents:
+      - page: Support
+        path: ./docs/pages/support.mdx
+  - api: API Reference
+
+colors:
+  accentPrimary: "#0F172A"
+  background: "#FFFFFF"
+
+typography:
+  headingsFont:
+    name: Inter
+  bodyFont:
+    name: Inter

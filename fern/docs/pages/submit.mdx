@@ -1,0 +1,33 @@
+---
+title: Submit Case Studies
+description: Submit your company's case studies for indexing.
+---
+
+# Submit Case Studies
+
+`POST /v1/submit`
+
+Want your case studies searchable via casestudy.dev? Submit your URL and we'll crawl and index them. No API key required.
+
+## Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `company_name` | string | Yes | Your company name |
+| `case_study_url` | string | Yes | URL to your case studies page |
+| `contact_email` | string | Yes | Email for updates |
+
+## Example
+
+```bash
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/submit \
+  -H "Content-Type: application/json" \
+  -d '{"company_name": "Acme Corp", "case_study_url": "https://acme.com/case-studies", "contact_email": "marketing@acme.com"}'
+```
+
+## What happens next
+
+1. We review your submission
+2. Our crawler indexes your case study pages
+3. AI structures each case study into searchable fields
+4. Your case studies become available via the API

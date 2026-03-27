@@ -1,0 +1,24 @@
+---
+title: Rate Limits
+description: Monthly request limits by tier.
+---
+
+# Rate Limits
+
+Requests reset on the 1st of each month.
+
+## Limits by tier
+
+| Tier | Monthly requests | Full text |
+|------|-----------------|-----------|
+| Free | 100 | No |
+| Pro | 10,000 | Yes |
+| Enterprise | Custom | Yes |
+
+## What counts as a request
+
+Every authenticated API call counts as one request. Batch search with 5 queries counts as 5. Public endpoints (`/v1/stats`, `/v1/keys`, `/v1/submit`) do not count.
+
+## When you hit your limit
+
+The API returns `429 Too Many Requests`.

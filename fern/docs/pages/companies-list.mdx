@@ -1,0 +1,24 @@
+---
+title: List & Search Companies
+description: List all indexed companies or search by name and industry.
+---
+
+# List & Search Companies
+
+`GET /v1/companies`
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `q` | string | Search by company name |
+| `industry` | string | Filter by industry |
+
+## Example
+
+```bash
+curl "https://whatsapp-backend-knd2.onrender.com/v1/companies?industry=payments" \
+  -H "X-API-Key: YOUR_KEY"
+```
+
+Results are sorted by total_case_studies descending.
