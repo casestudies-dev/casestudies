@@ -1,21 +1,21 @@
-# casestudy.dev
+# casestudies.dev
 
 Programmatic access to millions of real-life company case studies.
 
 We crawl, structure, and index case studies from hundreds of company websites so you can search them via API.
 
-**Docs**: [docs.casestudy.dev](https://docs.casestudy.dev)
+**Docs**: [docs.casestudies.dev](https://docs.casestudies.dev)
 
 ## Quick start
 
 ```bash
 # 1. Get a free API key
-curl -X POST https://api.casestudy.dev/v1/keys \
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/keys \
   -H "Content-Type: application/json" \
   -d '{"email": "you@company.com"}'
 
 # 2. Semantic search
-curl -X POST https://api.casestudy.dev/v1/casestudies/semantic \
+curl -X POST https://whatsapp-backend-knd2.onrender.com/v1/casestudies/semantic \
   -H "X-API-Key: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"query": "companies that reduced churn with better onboarding", "limit": 5}'
@@ -61,8 +61,9 @@ Every case study includes:
 
 | Tier | Requests/month | Full text | Price |
 |------|---------------|-----------|-------|
-| Free | 100 | No | Free |
-| Pro | 10,000 | Yes | $49/mo |
+| Starter | 200 | No | Free |
+| Growth | 5,000 | Yes | $79/mo |
+| Scale | 25,000 | Yes | $249/mo |
 | Enterprise | Custom | Yes | Contact us |
 
 ## API spec
@@ -71,5 +72,5 @@ The full OpenAPI 3.1 specification is available at [`openapi.yaml`](openapi.yaml
 
 ## Links
 
-- [API Docs](https://docs.casestudy.dev)
-- [Website](https://casestudy.dev)
+- [API Docs](https://docs.casestudies.dev)
+- [Website](https://casestudies.dev)
