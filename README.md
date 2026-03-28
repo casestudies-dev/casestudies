@@ -66,6 +66,53 @@ Every case study includes:
 | Scale | 25,000 | Yes | $249/mo |
 | Enterprise | Custom | Yes | Contact us |
 
+## MCP Server — connect to Claude, ChatGPT, and AI agents
+
+Give your AI agents direct access to case study search, company analysis, and vendor comparison. No API calls to write — just ask in natural language.
+
+### Claude Desktop
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "casestudies": {
+      "command": "python",
+      "args": ["/path/to/mcp-server/server.py"],
+      "env": {
+        "CASESTUDIES_API_KEY": "cs_live_your_key_here"
+      }
+    }
+  }
+}
+```
+
+### Claude Code
+
+```bash
+claude mcp add casestudies python /path/to/mcp-server/server.py -e CASESTUDIES_API_KEY=cs_live_xxx
+```
+
+### Available tools
+
+| Tool | Description |
+|------|-------------|
+| `search_case_studies` | Semantic search with natural language queries |
+| `get_case_study` | Get full details of a specific case study |
+| `search_companies` | Find companies by name or industry |
+| `get_company_analysis` | Competitor analysis — top industries, clients, outcomes |
+| `compare_vendors` | Side-by-side comparison of up to 5 companies |
+| `get_company_timeline` | Chronological view for due diligence |
+
+### Example prompts
+
+- "Find case studies about companies that improved onboarding conversion"
+- "Compare GoCardless, Checkout.com, and Paddle for ecommerce payments"
+- "What industries does Stripe serve? Show me their notable clients"
+
+[Full MCP docs →](https://docs.casestudies.dev)
+
 ## API spec
 
 The full OpenAPI 3.1 specification is available at [`openapi.yaml`](openapi.yaml).
@@ -74,3 +121,4 @@ The full OpenAPI 3.1 specification is available at [`openapi.yaml`](openapi.yaml
 
 - [API Docs](https://docs.casestudies.dev)
 - [Website](https://casestudies.dev)
+- [MCP Server](mcp-server/)
