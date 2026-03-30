@@ -178,6 +178,8 @@ def handle_tool_call(name: str, arguments: dict) -> str:
                     lines.append(f"  {s['summary']}")
                 if s.get('outcomes'):
                     lines.append(f"  Outcomes: {s['outcomes']}")
+                if s.get('source_url'):
+                    lines.append(f"  Source: {s['source_url']}")
                 lines.append(f"  ID: {s['id']}")
                 lines.append("")
             return "\n".join(lines)
