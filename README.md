@@ -78,6 +78,48 @@ Results stream in phase by phase as they are detected.
 
 [Setup guides →](https://docs.casestudies.dev)
 
+## MCP Server
+
+Connect casestudies.dev directly to Claude, Cursor, or any MCP-compatible agent.
+
+### Claude Code
+
+```bash
+claude mcp add casestudies python /path/to/mcp-server/server.py \
+  -e CASESTUDIES_API_KEY=cs_live_your_key_here
+```
+
+### Claude Desktop
+
+Add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "casestudies": {
+      "command": "python",
+      "args": ["/path/to/mcp-server/server.py"],
+      "env": {
+        "CASESTUDIES_API_KEY": "cs_live_your_key_here"
+      }
+    }
+  }
+}
+```
+
+### Available tools
+
+| Tool | What it does |
+|------|-------------|
+| `get_company_analysis` | Full tech stack for any domain |
+| `search_companies` | Find companies by name or industry |
+| `compare_vendors` | Side-by-side tech stack comparison |
+| `search_case_studies` | Semantic search across case studies |
+
+Once connected, just ask: *"What tools does stripe.com use?"* or *"Compare the tech stacks of revolut.com and monzo.com"*
+
+[MCP setup guide →](https://docs.casestudies.dev)
+
 ## Links
 
 - [Website](https://casestudies.dev)
