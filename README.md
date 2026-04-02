@@ -1,21 +1,19 @@
 # casestudies.dev
 
-Know what tools your prospects are using.
+Instant tech stack detection for any domain.
 
-Pass a domain to our API and get back every case study that company appears in — what vendors they use, what problems they solved, what outcomes they got. One call.
+Pass a domain to our API and get back every tool a company uses — detected from public records in seconds. One call.
 
+**Website**: [casestudies.dev](https://casestudies.dev)  
 **Docs**: [docs.casestudies.dev](https://docs.casestudies.dev)
 
 ## Quick start
 
 ```bash
-# 1. Get a free API key
-curl -X POST https://api.casestudies.dev/v1/keys \
-  -H "Content-Type: application/json" \
-  -d '{"email": "you@company.com"}'
+# 1. Get a free API key at casestudies.dev/signup
 
-# 2. Enrich a lead
-curl https://api.casestudies.dev/v1/enrich/bamboohr.com \
+# 2. Scan a domain
+curl https://api.casestudies.dev/v1/enrich/bestseller.com \
   -H "X-API-Key: YOUR_KEY"
 ```
 
@@ -23,103 +21,65 @@ Returns:
 
 ```json
 {
-  "domain": "bamboohr.com",
-  "found": true,
-  "featured_in": {
-    "total": 2,
-    "vendors": [
-      {
-        "vendor": { "name": "Remote.com", "domain": "remote.com" },
-        "case_studies": [{
-          "title": "BambooHR global hiring integration",
-          "problem": "Needed to hire in 90+ countries",
-          "outcomes": "90+ countries, full compliance"
-        }]
-      },
-      {
-        "vendor": { "name": "Brex", "domain": "brex.com" },
-        "case_studies": [{
-          "title": "BambooHR curbs unmanaged spend",
-          "outcomes": "50% cost reduction"
-        }]
-      }
-    ]
+  "domain": "bestseller.com",
+  "tools_detected": 16,
+  "by_category": {
+    "CRM": ["Salesforce", "Microsoft Dynamics 365"],
+    "Identity": ["Okta", "Duo Security"],
+    "Cloud": ["AWS", "Azure"],
+    "Collaboration": ["Microsoft 365", "Atlassian"],
+    "Monitoring": ["Datadog", "Grafana Cloud"]
   }
 }
 ```
 
-## Enrich response fields
+## How it works
 
-| Field | What it contains |
-|-------|-----------------|
-| `company.name` | Company name |
-| `company.industry` | Their industry |
-| `company.logo_url` | Logo URL |
-| `featured_in.total` | Number of vendor mentions |
-| `featured_in.vendors[].vendor.name` | Vendor they use |
-| `featured_in.vendors[].vendor.domain` | Vendor's domain |
-| `featured_in.vendors[].case_studies[].title` | Case study title |
-| `featured_in.vendors[].case_studies[].problem` | Problem they faced |
-| `featured_in.vendors[].case_studies[].solution` | How it was solved |
-| `featured_in.vendors[].case_studies[].outcomes` | Results and metrics |
-| `featured_in.vendors[].case_studies[].source_url` | Link to original |
+Every SaaS tool that requires domain verification leaves a permanent fingerprint in public records. We scan multiple sources in parallel:
+
+- **MX records** — email provider (Google Workspace, Microsoft 365, etc.)
+- **TXT records** — domain verification tokens for 100+ tools
+- **SPF includes** — email senders (Mailchimp, SendGrid, HubSpot, etc.)
+- **NS records** — DNS provider (AWS Route 53, Cloudflare, etc.)
+- **Certificate Transparency logs** — internal subdomains revealing backend tooling
+- **HTTP headers** — CDN, WAF, hosting provider
+
+No scraping. No guessing. Only signals verified against the actual domain.
+
+## Streaming
+
+For real-time progressive results:
+
+```bash
+curl https://api.casestudies.dev/v1/enrich-stream/revolut.com \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Accept: text/event-stream"
+```
+
+Results stream in phase by phase as they are detected.
+
+## Use cases
+
+- **CRM enrichment** — auto-detect tech stack when new accounts are created
+- **ICP filtering** — find companies using specific tools (e.g. Salesforce + AWS)
+- **Competitive intelligence** — compare stacks across target accounts
+- **AI agents** — give Claude or ChatGPT access via MCP server
 
 ## Integrations
-
-Works with any platform that can make HTTP requests:
 
 | Platform | How |
 |----------|-----|
 | **Clay** | HTTP enrichment step |
-| **Zapier** | Webhooks by Zapier → Custom Request |
+| **Zapier** | Custom Request action |
 | **Make** | HTTP module |
-| **HubSpot** | Operations Hub custom code action |
-| **Salesforce** | Flow HTTP Callout or Apex trigger |
-| **n8n** | HTTP Request node |
-| **Claude** | MCP server |
+| **HubSpot** | Operations Hub custom code |
+| **Salesforce** | Apex trigger + callout |
+| **Claude / Cursor** | MCP server |
 
-[Setup guides →](https://docs.casestudies.dev/integrations/clay)
-
-## All endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/v1/enrich/{domain}` | GET | **Primary** — enrich a lead with vendor intelligence |
-| `/v1/casestudies` | GET | Search with filters (company, industry, tag) |
-| `/v1/casestudies/semantic` | POST | Natural language search |
-| `/v1/casestudies/batch` | POST | Multiple queries in one call |
-| `/v1/casestudies/{id}` | GET | Single case study detail |
-| `/v1/companies` | GET | List indexed companies |
-| `/v1/companies/{slug}` | GET | Company + case studies |
-| `/v1/companies/{slug}/analysis` | GET | Top industries, clients, outcomes |
-| `/v1/companies/{slug}/timeline` | GET | Chronological view |
-| `/v1/compare` | POST | Vendor comparison |
-| `/v1/stats` | GET | Platform stats (no auth) |
-| `/v1/keys` | POST | Register API key (no auth) |
-
-## MCP Server
-
-Connect to Claude Desktop or Claude Code:
-
-```bash
-claude mcp add casestudies -e CASESTUDIES_API_KEY=cs_live_xxx \
-  -- python /path/to/mcp-server/server.py
-```
-
-[MCP setup guide →](https://docs.casestudies.dev/guides/mcp-server)
-
-## Pricing
-
-| Tier | Requests/month | Price |
-|------|---------------|-------|
-| Starter | 200 | Free |
-| Growth | 5,000 | $79/mo |
-| Scale | 25,000 | $249/mo |
-| Enterprise | Custom | Contact us |
+[Setup guides →](https://docs.casestudies.dev)
 
 ## Links
 
 - [Website](https://casestudies.dev)
 - [API Docs](https://docs.casestudies.dev)
-- [Integrations](https://docs.casestudies.dev/integrations/clay)
-- [MCP Server](mcp-server/)
+- [Dashboard](https://casestudies.dev/dashboard)
